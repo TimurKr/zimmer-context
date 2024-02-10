@@ -47,7 +47,7 @@ function createStoreSlice<State extends object, Actions extends object>(
 }
 
 function createGlobalStoreContext<
-  Slices extends { [K in keyof Slices]: SliceGenerator<any, any> },
+  Slices extends { [K in keyof Slices]: SliceGenerator<object, object> },
   StoreState extends { [K in keyof Slices]: ReturnType<Slices[K]> }
 >(slices: Slices, version?: number) {
   type InitialState = Partial<{
@@ -57,12 +57,13 @@ function createGlobalStoreContext<
     return createStore<StoreState>()(
       persist(
         immer((set, get, store) => {
-          let result: Partial<StoreState> = {};
+          const result: Partial<StoreState> = {};
 
-          for (let key in slices) {
+          for (const key in slices) {
             const typedKey = key as keyof Slices;
+            // @ts-expect-error - we know the return value from slices is assignable to result[typedKey]
             result[typedKey] = slices[typedKey](
-              // @ts-ignore
+              // @ts-expect-error - we know store is the right type
               store,
               typedKey,
               initStoreState?.[typedKey]
@@ -85,7 +86,7 @@ function createGlobalStoreContext<
             keys.forEach((key) => {
               if (key in persistedState) {
                 const state = (persistedState as Partial<StoreState>)[key];
-                if (!!state) {
+                if (state) {
                   resultState = {
                     ...resultState,
                     [key]: { ...currentState[key], ...state },
