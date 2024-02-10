@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "jsx": "preserve",
+    "outDir": "./lib",
+    "module": "commonjs",
+    "target": "ES5",
+    "declaration": true,
+    "strict": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "**/__tests__/*"]
+}
