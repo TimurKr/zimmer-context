@@ -2,7 +2,7 @@
 
 ### Getting Started
 
-In command line run:
+Install the package with
 
 ```bash
 npm install zimmer-context
@@ -15,7 +15,7 @@ It is dead simple, this library provides only 2 functions:
 - `createStoreSlice` to define your slices
 - `createGlobalStoreContext` to use your slices and get your `ContextProvider` and `useStoreContext` hook to use the store
 
-I felt there was too much boilerplate when using zustand with immer and persits, especially as my projects grew, so I created this package. Everything is fully typed and as simple as possible.
+I felt there was too much boilerplate when using zustand with immer and persist, especially as my projects grew, so I created this package. Everything is fully typed and as simple as possible.
 
 #### 1. Creating slices
 
@@ -24,16 +24,16 @@ Create a file `store/fishSlice.ts`, where you define your slice with `createStor
 ```typescript
 import { createStoreSlice } from "zimmer-context";
 
-type State = {
+type FishState = {
   count: number;
 };
 
-type Actions = {
+type FishActions = {
   increment: (qty: number) => void;
   decrement: (qty: number) => void;
 };
 
-export const fishSlice = createStoreSlice<State, Actions>((set, get) => ({
+export const fishSlice = createStoreSlice<FishState, FishActions>((set, get) => ({
   count: 0,
   increment: (qty: number) => set((state) => ({ count: state.count + qty })),
   decrement: (qty: number) => set((state) => ({ count: state.count - qty })),
@@ -45,16 +45,16 @@ and another `store/bearSlice.ts` slice like so:
 ```typescript
 import { createStoreSlice } from "zimmer-context";
 
-type State = {
+type BearState = {
   count: number;
 };
 
-type Actions = {
+type BearActions = {
   increment: (qty: number) => void;
   decrement: (qty: number) => void;
 };
 
-export const bearSlice = createStoreSlice<State, Actions>((set, get) => ({
+export const bearSlice = createStoreSlice<BearState, BearActions>((set, get) => ({
   count: 0,
   increment: (qty: number) => set((state) => ({ count: state.count + qty })),
   decrement: (qty: number) => set((state) => ({ count: state.count - qty })),
@@ -118,6 +118,13 @@ export default async function DisplayCounts() {
     <div>
       <div>fish: {fish.count}</div>
       <div>bear: {bear.count}</div>
+      <button 
+        onClick={() => {
+          fish.decrement(1);
+        }}
+      >
+        Bear eats fish
+      </button>
     </div>
   );
 }
