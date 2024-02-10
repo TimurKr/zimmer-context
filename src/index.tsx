@@ -12,6 +12,14 @@ declare type SliceGenerator<S extends object, A extends object> = ReturnType<
   typeof createStoreSlice<S, A>
 >;
 
+/**
+ * Creates a store slice with the given slice template.
+ *
+ * @template State - The type of the state object.
+ * @template Actions - The type of the actions object.
+ * @param sliceTemplate - The slice template function that defines the state and actions of the store slice. Accepts set and get functions and returns the state and actions object.
+ * @returns The created store slice function.
+ */
 function createStoreSlice<State extends object, Actions extends object>(
   sliceTemplate: (
     set: Updater<State & Actions>,
@@ -46,6 +54,14 @@ function createStoreSlice<State extends object, Actions extends object>(
   };
 }
 
+/**
+ * Creates a global store context with the specified slices and optional version.
+ * @template Slices - The type of the slices object.
+ * @template StoreState - The type of the store state object.
+ * @param slices - An object containing slice generators.
+ * @param version - An optional version number for the store, used for persist middleware. Change the version number to reset the persisted state.
+ * @returns An object containing the ContextProvider and useStoreContext functions.
+ */
 function createGlobalStoreContext<
   Slices extends { [K in keyof Slices]: SliceGenerator<object, object> },
   StoreState extends { [K in keyof Slices]: ReturnType<Slices[K]> }
@@ -111,7 +127,10 @@ function createGlobalStoreContext<
       children,
       initStoreState,
     }: {
-      children: JSX.Element | ((state: StoreState) => JSX.Element);
+      children:
+        | JSX.Element
+        | ((state: StoreState) => JSX.Element)
+        | React.ReactNode;
       initStoreState?: InitialState;
     }) => {
       "use client";
@@ -131,7 +150,7 @@ function createGlobalStoreContext<
     ) {
       const store = useContext(Context);
       if (!store) {
-        throw new Error("useContextStore must be used within a context");
+        throw new Error("useContextStore must be used within ContextProvider");
       }
       return useStore(store, selector);
     },

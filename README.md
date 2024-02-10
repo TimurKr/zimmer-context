@@ -10,9 +10,12 @@ npm install zimmer-context
 
 ### Using the package
 
-It is dead simple, this library provides only 2 functions: 
+It is dead simple, this library provides only 2 functions:
+
 - `createStoreSlice` to define your slices
-- `createGlobalStoreContext` to use your slices and get your context provider ans hook to use the store
+- `createGlobalStoreContext` to use your slices and get your `ContextProvider` and `useStoreContext` hook to use the store
+
+I felt there was too much boilerplate when using zustand with immer and persits, especially as my projects grew, so I created this package. Everything is fully typed and as simple as possible.
 
 #### 1. Creating slices
 
@@ -37,7 +40,7 @@ export const fishSlice = createStoreSlice<State, Actions>((set, get) => ({
 }));
 ```
 
-and another `store/bearSlice.ts` slice like so: 
+and another `store/bearSlice.ts` slice like so:
 
 ```typescript
 import { createStoreSlice } from "zimmer-context";
@@ -61,6 +64,7 @@ export const bearSlice = createStoreSlice<State, Actions>((set, get) => ({
 #### 2. Create your global store using slices
 
 In another file (say `store/global_store.ts`) import all of the slices and create the global store:
+
 ```typescript
 "use client";
 
@@ -92,7 +96,7 @@ export default async function ReactComponent({
   return (
     <ContextProvider
       initStoreState={{
-        fish: { count: 10 }
+        fish: { count: 10 },
       }}
     >
       {children}
@@ -103,7 +107,8 @@ export default async function ReactComponent({
 
 #### 4. Use the store with `useStoreContext`
 
-Inside the ContextProvider you can get the state like so: 
+Inside the ContextProvider you can get the state like so:
+
 ```typescript
 import { useStoreContext } from "store/global_store";
 
@@ -120,4 +125,4 @@ export default async function DisplayCounts() {
 
 ### Contributing
 
-Feel free to open issues and contribute by creating pull requests! I am open to any and all suggestions. 
+Feel free to open issues and contribute by creating pull requests! I am open to any and all suggestions.
