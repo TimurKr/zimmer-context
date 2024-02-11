@@ -29,7 +29,7 @@ function createStoreSlice<State extends object, Actions extends object>(
   return <
     MS extends Mutate<
       StoreApi<{ [P in K]: State & Actions }>,
-      [["zustand/immer", unknown]]
+      [["zustand/persist", unknown], ["zustand/immer", unknown]]
     >,
     K extends keyof ReturnType<MS["getState"]> & string
   >(

@@ -8,12 +8,7 @@ export default async function ReactComponent({
   return (
     <ContextProvider
       initStoreState={{
-        fish: {
-          count: 10,
-        },
-        bear: {
-          count: 2,
-        },
+        fish: { count: 10 },
       }}
     >
       {children}

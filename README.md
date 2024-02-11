@@ -1,6 +1,6 @@
-# Complex state management using zustand and immer made simple
+# Complex zustand slices patterns made simple with full typescript support
 
-### Getting Started
+## Getting Started
 
 Install the package with
 
@@ -8,7 +8,7 @@ Install the package with
 npm install zimmer-context
 ```
 
-### Using the package
+## Using the package
 
 It is dead simple, this library provides only 2 functions:
 
@@ -17,7 +17,7 @@ It is dead simple, this library provides only 2 functions:
 
 I felt there was too much boilerplate when using zustand with immer and persist, especially as my projects grew, so I created this package. Everything is fully typed and as simple as possible.
 
-#### 1. Creating slices
+### 1. Creating slices
 
 Create a file `store/fishSlice.ts`, where you define your slice with `createStoreSlice`. First define your state and actions. then inside the createStoreSlice define the default values and the functions. you have access to set and get fucnctions to retrieve and manipulate with the data in this slice. You cannot access data in another slices, as at the time of defining your slice, typescript doesn't know aobut the structure of other slices.
 
@@ -33,11 +33,13 @@ type FishActions = {
   decrement: (qty: number) => void;
 };
 
-export const fishSlice = createStoreSlice<FishState, FishActions>((set, get) => ({
-  count: 0,
-  increment: (qty: number) => set((state) => ({ count: state.count + qty })),
-  decrement: (qty: number) => set((state) => ({ count: state.count - qty })),
-}));
+export const fishSlice = createStoreSlice<FishState, FishActions>(
+  (set, get) => ({
+    count: 0,
+    increment: (qty: number) => set((state) => ({ count: state.count + qty })),
+    decrement: (qty: number) => set((state) => ({ count: state.count - qty })),
+  })
+);
 ```
 
 and another `store/bearSlice.ts` slice like so:
@@ -54,14 +56,16 @@ type BearActions = {
   decrement: (qty: number) => void;
 };
 
-export const bearSlice = createStoreSlice<BearState, BearActions>((set, get) => ({
-  count: 0,
-  increment: (qty: number) => set((state) => ({ count: state.count + qty })),
-  decrement: (qty: number) => set((state) => ({ count: state.count - qty })),
-}));
+export const bearSlice = createStoreSlice<BearState, BearActions>(
+  (set, get) => ({
+    count: 0,
+    increment: (qty: number) => set((state) => ({ count: state.count + qty })),
+    decrement: (qty: number) => set((state) => ({ count: state.count - qty })),
+  })
+);
 ```
 
-#### 2. Create your global store using slices
+### 2. Create your global store using slices
 
 In another file (say `store/global_store.ts`) import all of the slices and create the global store:
 
@@ -81,7 +85,7 @@ export const { ContextProvider, useStoreContext } = createGlobalStoreContext(
 );
 ```
 
-#### 3. Provide the context with `ContextProvider`
+### 3. Provide the context with `ContextProvider`
 
 Here you can override the initial store state with your data, such as fetched one, or from URL search parameters.
 
@@ -105,7 +109,7 @@ export default async function ReactComponent({
 }
 ```
 
-#### 4. Use the store with `useStoreContext`
+### 4. Use the store with `useStoreContext`
 
 Inside the ContextProvider you can get the state like so:
 
@@ -118,7 +122,7 @@ export default async function DisplayCounts() {
     <div>
       <div>fish: {fish.count}</div>
       <div>bear: {bear.count}</div>
-      <button 
+      <button
         onClick={() => {
           fish.decrement(1);
         }}

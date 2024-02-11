@@ -6,6 +6,13 @@ export default async function DisplayCounts() {
     <div>
       <div>fish: {fish.count}</div>
       <div>bear: {bear.count}</div>
+      <button
+        onClick={() => {
+          fish.decrement(1);
+        }}
+      >
+        Bear eats fish
+      </button>
     </div>
   );
 }
