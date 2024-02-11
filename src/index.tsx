@@ -122,6 +122,28 @@ function createGlobalStoreContext<
 
   const Context = createContext<Store | null>(null);
 
+  /**
+   * Use this function inside the context provider to access the store state.
+   * @param selector - A function which takes the full store state and returns a subset of it.
+   * @returns Full store state, or a subset of the store state.
+   */
+  function useStoreContext(): Store;
+  /**
+   * Use this function inside the context provider to access the store object. Use this to clear the persist storage and more.
+   * @returns The store object.
+   */
+  function useStoreContext<S>(selector?: (state: StoreState) => S): S;
+  function useStoreContext(selector?: any) {
+    const store = useContext(Context);
+    if (!store) {
+      throw new Error("useContextStore must be used within ContextProvider");
+    }
+    if (!selector) {
+      return store;
+    }
+    return useStore(store, selector);
+  }
+
   return {
     /**
      * A context provider for the global store.
@@ -150,21 +172,7 @@ function createGlobalStoreContext<
       );
     },
 
-    /**
-     * Use this function inside the context provider to access the store. Either select a subset of teh state with the selector or get the store object.
-     * @param selector - A function which takes the full store state and returns a subset of it. If not provided, the store is returned.
-     * @returns Full store, or a subset of the store state.
-     */
-    useStoreContext: function useContextStore<U>(
-      selector?: (state: StoreState) => U
-    ) {
-      const store = useContext(Context);
-      if (!store) {
-        throw new Error("useContextStore must be used within ContextProvider");
-      }
-      if (!selector) return store;
-      else return useStore(store, selector);
-    },
+    useStoreContext: useStoreContext,
   };
 }
 
