@@ -1,9 +1,7 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "plugins": [
-    "@typescript-eslint"
-  ],
+  "plugins": ["@typescript-eslint"],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
@@ -12,6 +10,7 @@
   "rules": {
     "no-console": 1,
     "semi-style": ["error", "last"],
-    "semi": [2, "always"]
+    "semi": [2, "always"],
+    "@typescript-eslint/no-explicit-any": "off"
   }
 }

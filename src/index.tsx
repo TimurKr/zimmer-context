@@ -132,7 +132,7 @@ function createGlobalStoreContext<
    * Use this function inside the context provider to access the store object. Use this to clear the persist storage and more.
    * @returns The store object.
    */
-  function useStoreContext<S>(selector?: (state: StoreState) => S): S;
+  function useStoreContext<S>(selector: (state: StoreState) => S): S;
   function useStoreContext(selector?: any) {
     const store = useContext(Context);
     if (!store) {
