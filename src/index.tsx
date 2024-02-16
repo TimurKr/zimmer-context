@@ -59,13 +59,14 @@ function createStoreSlice<State extends object, Actions extends object>(
  * @template Slices - The type of the slices object.
  * @template StoreState - The type of the store state object.
  * @param slices - An object containing slice generators.
- * @param version - An optional version number for the store, used for persist middleware. Change the version number to reset the persisted state.
+ * @param options - An optional object specifying options for the global store.
+ * @param options.version - An optional version number for the global store. Change this to not use the persist storage next time.
  * @returns
  */
 function createGlobalStoreContext<
   Slices extends { [K in keyof Slices]: SliceGenerator<object, object> },
   StoreState extends { [K in keyof Slices]: ReturnType<Slices[K]> }
->(slices: Slices, version?: number) {
+>(slices: Slices, options?: { version?: number }) {
   type InitialState = Partial<{
     [K in keyof Slices]: Parameters<Slices[K]>[2];
   }>;
@@ -90,7 +91,7 @@ function createGlobalStoreContext<
         }),
         {
           name: "dashboard-store",
-          version: version,
+          version: options?.version,
           merge: (persistedState, currentState) => {
             if (!persistedState || typeof persistedState !== "object") {
               return currentState;

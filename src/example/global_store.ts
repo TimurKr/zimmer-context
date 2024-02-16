@@ -9,5 +9,7 @@ export const { ContextProvider, useStoreContext } = createGlobalStoreContext(
     fish: fishSlice,
     bear: bearSlice,
   },
-  1
+  {
+    version: 1,
+  }
 );
