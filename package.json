@@ -1,6 +1,6 @@
 {
   "name": "zimmer-context",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "description": "Dead simple state management with context using zustand and immer",
   "main": "lib/index.jsx",
   "types": "lib/index.d.ts",
