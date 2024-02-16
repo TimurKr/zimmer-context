@@ -23,7 +23,8 @@ declare type SliceGenerator<S extends object, A extends object> = ReturnType<
 function createStoreSlice<State extends object, Actions extends object>(
   sliceTemplate: (
     set: Updater<State & Actions>,
-    get: () => State & Actions
+    get: () => State & Actions,
+    store: StoreApi<object>
   ) => State & Actions
 ) {
   return <
@@ -49,7 +50,7 @@ function createStoreSlice<State extends object, Actions extends object>(
     };
     const get = () => fullStore.getState()[key];
 
-    const slice = { ...sliceTemplate(set, get), ...initialOverride };
+    const slice = { ...sliceTemplate(set, get, fullStore), ...initialOverride };
     return slice as State & Actions;
   };
 }

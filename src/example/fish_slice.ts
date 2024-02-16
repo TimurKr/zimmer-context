@@ -10,7 +10,7 @@ type FishActions = {
 };
 
 export const fishSlice = createStoreSlice<FishState, FishActions>(
-  (set, get) => ({
+  (set, get, store) => ({
     count: 0,
     increment: (qty: number) => set((state) => ({ count: state.count + qty })),
     decrement: (qty: number) => set((state) => ({ count: state.count - qty })),
