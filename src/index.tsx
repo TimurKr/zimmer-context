@@ -61,46 +61,43 @@ function createStoreSlice<State extends object, Actions extends object>(
  * @template StoreState - The type of the store state object.
  * @param slices - An object containing slice generators.
  * @param options - An optional object specifying options for the global store.
- * @param options.version - An optional version number for the global store. Change this to not use the persist storage next time.
+ * @param options.persist.version - An optional version number for the global store. Change this to not use the persist storage next time.
  * @returns
  */
 function createGlobalStoreContext<
   Slices extends { [K in keyof Slices]: SliceGenerator<object, object> },
   StoreState extends { [K in keyof Slices]: ReturnType<Slices[K]> }
->(slices: Slices, options?: { version?: number }) {
+>(slices: Slices, options?: { persist?: { version?: number } }) {
   type InitialState = Partial<{
     [K in keyof Slices]: Parameters<Slices[K]>[2];
   }>;
   const createGlobalStore = (initStoreState?: InitialState) => {
-    return createStore<StoreState>()(
-      persist(
-        immer((set, get, store) => {
-          const result: Partial<StoreState> = {};
+    const storeBuilder = <T1, T2, T3>(set: T1, get: T2, store: T3) => {
+      const result: Partial<StoreState> = {};
+      for (const key in slices) {
+        const typedKey = key as keyof Slices;
+        // @ts-expect-error - we know the return value from slices is assignable to result[typedKey]
+        result[typedKey] = slices[typedKey](
+          // @ts-expect-error - we know store is the right type
+          store,
+          typedKey,
+          initStoreState?.[typedKey]
+        );
+      }
+      return result as StoreState;
+    };
 
-          for (const key in slices) {
-            const typedKey = key as keyof Slices;
-            // @ts-expect-error - we know the return value from slices is assignable to result[typedKey]
-            result[typedKey] = slices[typedKey](
-              // @ts-expect-error - we know store is the right type
-              store,
-              typedKey,
-              initStoreState?.[typedKey]
-            );
-          }
-
-          return result as StoreState;
-        }),
-        {
+    if (options?.persist) {
+      return createStore<StoreState>()(
+        persist(immer(storeBuilder), {
           name: "dashboard-store",
-          version: options?.version,
+          version: options.persist.version,
           merge: (persistedState, currentState) => {
             if (!persistedState || typeof persistedState !== "object") {
               return currentState;
             }
-
             let resultState: StoreState = { ...currentState };
             const keys = Object.keys(currentState) as (keyof StoreState)[];
-
             keys.forEach((key) => {
               if (key in persistedState) {
                 const state = (persistedState as Partial<StoreState>)[key];
@@ -112,12 +109,12 @@ function createGlobalStoreContext<
                 }
               }
             });
-
             return resultState;
           },
-        }
-      )
-    );
+        })
+      );
+    }
+    return createStore<StoreState>()(immer(storeBuilder));
   };
 
   type Store = ReturnType<typeof createGlobalStore>;

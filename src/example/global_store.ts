@@ -10,6 +10,6 @@ export const { ContextProvider, useStoreContext } = createGlobalStoreContext(
     bear: bearSlice,
   },
   {
-    version: 1,
+    persist: { version: 1 },
   }
 );

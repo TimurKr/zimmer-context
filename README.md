@@ -82,7 +82,10 @@ export const { ContextProvider, useStoreContext } = createGlobalStoreContext(
     bear: bearSlice,
   },
   {
-    version: 1, // Persist version, change whenever there is a breaking change in the structure of the store
+    persist: {
+      // Do not specify to not use persist
+      version: 1, // Persist version, change whenever there is a breaking change in the structure of the store
+    },
   }
 );
 ```
